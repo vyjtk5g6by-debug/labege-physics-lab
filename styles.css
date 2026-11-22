@@ -14,3 +14,5 @@
 /* Unified LABEGE simulator tools, timer, graph panel */
 .sim-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.4px;color:var(--muted);background:#fbfdff}.sim-tools b{color:var(--blue);font-size:13px;margin-left:6px}.tool-toggle{border:1px solid #cddbe8;background:#fff;color:#567087;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer}.tool-toggle.active{background:#e7f7f8;border-color:#9bdbe1;color:#168b99}.graph-canvas{width:100%;height:150px;display:block;background:#fff;border-top:1px solid var(--line)}.sim-tools button{white-space:nowrap}
 @media(max-width:560px){.sim-tools{font-size:10px;padding:9px}.tool-toggle{padding:8px 9px;font-size:10px}.graph-canvas{height:125px}}
+
+.time-scrub{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);white-space:nowrap}.time-scrub input{width:min(26vw,170px);accent-color:#2676db}.time-scrub span{font-variant-numeric:tabular-nums;color:var(--blue);min-width:42px}@media(max-width:560px){.time-scrub input{width:110px}.sim-tools{flex-wrap:wrap}}
