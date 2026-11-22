@@ -125,12 +125,12 @@ function drawElectric(w,h){
   const amp=active==='magAmpere',q=amp?values.Ia:values.qL,v=amp?1:values.vL,B=amp?values.Ba:values.BL,L=amp?values.La:1,angle=amp?values.angA:values.angL,a=angle*Math.PI/180;
   const force=amp?q*B*(L/100)*Math.sin(a):q*1e-6*v*B*Math.sin(a),visualForce=Math.min(105,force*(amp?3:5e7));
   // B is horizontal in the plane; the current/velocity vector forms angle alpha with it.
-  const sx=cx-len*.36,sy=cy,wireLen=amp?len*(.35+.065*L):len*.68,ex=sx+wireLen*Math.cos(a),ey=sy-wireLen*Math.sin(a;
+  const sx=cx-len*.36,sy=cy,wireLen=amp?len*(.35+.065*L):len*.68,ex=sx+wireLen*Math.cos(a),ey=sy-wireLen*Math.sin(a);
   ctx.strokeStyle='#df4b4b';ctx.lineWidth=amp?2+q*.45:3+Math.min(4,v*.35);ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
   drawArrow(sx,sy,wireLen,0,'#df4b4b',Math.cos(a),-Math.sin(a));
   text(amp?'I — направление тока':'v — скорость частицы',ex+8,ey-8,12,'#df4b4b',true);
   // B field vector
-  drawArrow(cx-len*.38,cy+len*.28,len*.76,0,'#18a8b7',1,0);
+  const fieldStrength=Math.max(.1,Math.min(2,B)),fieldTicks=Math.max(2,Math.min(7,Math.round(fieldStrength*3.5)));ctx.save();ctx.globalAlpha=.35+fieldStrength*.3;for(let j=0;j<fieldTicks;j++){const tx=cx-len*.34+j*len*.1;ctx.strokeStyle='#18a8b7';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(tx,cy+len*.18);ctx.lineTo(tx,cy+len*.28);ctx.stroke();}ctx.restore();drawArrow(cx-len*.38,cy+len*.28,len*.76,0,'#18a8b7',1,0);
   text('B — магнитная индукция',cx-len*.22,cy+len*.28+18,12,'#18a8b7',true);
   // F is perpendicular to the drawing plane. For positive charge/current convention, mark direction.
   const fr=7+Math.min(22,visualForce*.25),fx=cx+len*.16,fy=cy-len*.18;
