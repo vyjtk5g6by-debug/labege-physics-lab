@@ -16,3 +16,5 @@
 @media(max-width:560px){.sim-tools{font-size:10px;padding:9px}.tool-toggle{padding:8px 9px;font-size:10px}.graph-canvas{height:125px}}
 
 .time-scrub{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);white-space:nowrap}.time-scrub input{width:min(26vw,170px);accent-color:#2676db}.time-scrub span{font-variant-numeric:tabular-nums;color:var(--blue);min-width:42px}@media(max-width:560px){.time-scrub input{width:110px}.sim-tools{flex-wrap:wrap}}
+
+.subsection-card[data-subsection="oscillations"] .subsection-icon{color:#7c63d7}
