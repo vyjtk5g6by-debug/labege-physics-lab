@@ -135,7 +135,7 @@ function drawElectric(w,h){
   // F is perpendicular to the drawing plane. For positive charge/current convention, mark direction.
   const fr=7+Math.min(22,visualForce*.25),fx=cx+len*.16,fy=cy-len*.18;
   ctx.strokeStyle='#e0a12c';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(fx,fy,fr,0,Math.PI*2);ctx.stroke();
-  if(force>1e-12){ctx.fillStyle='#e0a12c';ctx.beginPath();ctx.arc(fx,fy,3,0,Math.PI*2);ctx.fill();text('F ⊙ — к наблюдателю',fx+fr+6,fy+4,11,'#e0a12c',true);}else text('F = 0',fx+fr+6,fy+4,12,'#e0a12c',true);
+  if(force>1e-12){ctx.fillStyle='#e0a12c';ctx.beginPath();ctx.arc(fx,fy,3,0,Math.PI*2);ctx.fill();text('F ⊗ — от наблюдателя',fx+fr+6,fy+4,11,'#e0a12c',true);}else text('F = 0',fx+fr+6,fy+4,12,'#e0a12c',true);
   // Parameter-dependent moving current/particle marker
   const speed=amp?q:v,phase=(elapsed*Math.max(.3,speed*.4))%1,px=sx+(ex-sx)*phase,py=sy+(ey-sy)*phase;
   ctx.fillStyle='#f5c04b';ctx.beginPath();ctx.arc(px,py,amp?4+q*.35:4+v*.25,0,Math.PI*2);ctx.fill();
