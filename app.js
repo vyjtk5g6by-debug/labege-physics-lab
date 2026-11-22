@@ -1,0 +1,77 @@
+(() => {
+const $=s=>document.querySelector(s), canvas=$('#labCanvas'), ctx=canvas.getContext('2d');
+const catalog={
+ motion:{area:'mechanics',tag:'МЕХАНИКА · КИНЕМАТИКА',title:'Равноускоренное движение',desc:'Измени начальную скорость или ускорение и наблюдай, как меняется положение тележки.',params:[{key:'v0',label:'Начальная скорость v₀',min:0,max:12,step:.1,val:2,unit:'м/с'},{key:'a',label:'Ускорение a',min:0,max:4,step:.1,val:1,unit:'м/с²'}],formula:'s = v₀t + at²/2',explain:'При ускорении скорость растёт со временем. За равные промежутки времени тележка проходит всё большие расстояния.'},
+ energy:{area:'mechanics',tag:'МЕХАНИКА · ЭНЕРГИЯ',title:'Кинетическая и потенциальная энергия',desc:'Шар скользит по наклонной без трения. Наблюдай переход энергии положения в энергию движения.',params:[{key:'m',label:'Масса m',min:.2,max:5,step:.1,val:1,unit:'кг'},{key:'h',label:'Высота h',min:1,max:10,step:.1,val:5,unit:'м'}],formula:'Eₖ = mv²/2 · Eₚ = mgh · E = Eₖ + Eₚ',explain:'В модели без трения полная механическая энергия сохраняется: Eₖ + Eₚ = const.'},
+ ohm:{area:'electricity',tag:'ЭЛЕКТРИЧЕСТВО · ЦЕПИ',title:'Закон Ома',desc:'Измени напряжение и сопротивление, следи за током и движением зарядов в цепи.',params:[{key:'U',label:'Напряжение U',min:1,max:24,step:1,val:12,unit:'В'},{key:'R',label:'Сопротивление R',min:1,max:24,step:1,val:6,unit:'Ом'}],formula:'I = U/R',explain:'Реальная последовательная цепь: источник, ключ, амперметр и резистор. Вольтметр подключён параллельно резистору.'},
+ optics:{area:'optics',tag:'ОПТИКА · ПРЕЛОМЛЕНИЕ',title:'Преломление света',desc:'Изменяй угол преломления β и показатель преломления второй среды n₂. Угол падения α рассчитывается по закону Снеллиуса.',params:[{key:'beta',label:'Угол преломления β',min:5,max:60,step:1,val:25,unit:'°'},{key:'n',label:'Показатель n₂',min:1.1,max:2.2,step:.01,val:1.5,unit:''}],formula:'n₁sin α = n₂sin β',explain:'Угол падения α вычисляется из выбранных β и n₂ при n₁ = 1 (воздух).'}
+};
+const areas={mechanics:{name:'Механика',subtitle:'Движение, взаимодействие и энергия',models:['motion','energy']},electricity:{name:'Электричество',subtitle:'Электрические величины и цепи',models:['ohm']},optics:{name:'Оптика',subtitle:'Распространение и поведение света',models:['optics']}};
+let active=null,values={},elapsed=0,paused=false,raf=0,last=0;
+function showArea(id){const a=areas[id];$('#models').classList.remove('hidden');$('#areaKicker').textContent=a.name.toUpperCase();$('#areaTitle').textContent=a.subtitle;$('#modelGrid').innerHTML=a.models.map(k=>{const m=catalog[k];return `<article class="model-card"><div class="mini">${k==='energy'?'↘ Eₖ + Eₚ':k==='motion'?'→ s(t)':k==='ohm'?'ϟ I = U/R':'⌁ α → β'}</div><h3>${m.title}</h3><p>${m.desc}</p><button data-model="${k}">Открыть модель ↗</button></article>`}).join('');$('#models').scrollIntoView({behavior:'smooth'});}
+function openModel(id){active=id;const m=catalog[id];values={};m.params.forEach(p=>values[p.key]=p.val);elapsed=0;paused=false;$('#labTag').textContent=m.tag;$('#labTitle').textContent=m.title;$('#labDesc').textContent=m.desc;$('#formula').textContent=m.formula;$('#explain').textContent=m.explain;$('#play').textContent='Ⅱ Пауза';$('#params').innerHTML=m.params.map(p=>`<div class="param"><label><span>${p.label}</span><b id="val-${p.key}">${p.val} ${p.unit}</b></label><input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.val}" data-key="${p.key}"></div>`).join('');$('#modal').classList.remove('hidden');fitCanvas();draw();last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
+function close(){cancelAnimationFrame(raf);active=null;$('#modal').classList.add('hidden');}
+function fitCanvas(){const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);}
+function loop(now){if(!active)return;const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;if(!paused)elapsed+=dt;drawAndUpdate();raf=requestAnimationFrame(loop);}
+function draw(){if(!active)return;const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);if(active==='motion')drawMotion(w,h);if(active==='energy')drawEnergy(w,h);if(active==='ohm')drawOhm(w,h);if(active==='optics')drawOptics(w,h);}
+function grid(w,h){ctx.save();ctx.strokeStyle='#e4edf5';ctx.lineWidth=1;for(let x=0;x<w;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.restore();}
+function text(t,x,y,size=13,color='#536b82',bold=false){ctx.fillStyle=color;ctx.font=`${bold?'700':'500'} ${size}px Segoe UI,Arial`;ctx.fillText(t,x,y)}
+function drawMotion(w,h){grid(w,h);const p=values,v=p.v0+p.a*elapsed,s=p.v0*elapsed+.5*p.a*elapsed*elapsed,trackY=h*.72,trackX=w*.12,trackW=w*.76;ctx.strokeStyle='#819cb6';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(trackX,trackY);ctx.lineTo(trackX+trackW,trackY);ctx.stroke();for(let i=0;i<=10;i++){let x=trackX+trackW*i/10;ctx.strokeStyle='#9fb4c8';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,trackY+4);ctx.lineTo(x,trackY+13);ctx.stroke();text(`${i*5}м`,x-7,trackY+30,10)}let x=trackX+Math.min(1,s/50)*trackW;ctx.fillStyle='#2879df';ctx.fillRect(x-22,trackY-31,44,25);ctx.fillStyle='#164f99';ctx.beginPath();ctx.arc(x-12,trackY-4,7,0,Math.PI*2);ctx.arc(x+12,trackY-4,7,0,Math.PI*2);ctx.fill();text(`v = ${v.toFixed(2)} м/с`,trackX,32,16,'#2174d5',true);text(`s = ${Math.min(s,50).toFixed(2)} м`,trackX,55,13);text('Тележка движется по прямой',trackX,h*.18,13);}
+function drawEnergy(w,h){
+  // Energy model: frictionless block/ball sliding down a ramp. All energy values
+  // are computed directly from the same instantaneous height and speed.
+  const m=values.m, h0=values.h, g=9.8, L=12;
+  const hPhys=Math.min(h0,L*.95), sinTheta=hPhys/L, a=g*sinTheta;
+  const tDown=Math.sqrt(2*L/a), cycle=tDown+1.15, t=elapsed%cycle;
+  const sNow=Math.min(L,.5*a*Math.min(t,tDown)**2), ratio=sNow/L;
+  const hNow=Math.max(0,hPhys*(1-ratio));
+  const v=Math.sqrt(Math.max(0,2*g*(hPhys-hNow)));
+  const ep=m*g*hNow, ek=.5*m*v*v, total=ep+ek;
+  ctx.fillStyle='#f1f8ff';ctx.fillRect(0,0,w,h);grid(w,h);
+  const left=w*.14, base=h*.72, right=w*.78;
+  // Slider height changes the actual drawing height of the ramp.
+  const top=base-Math.min(h*.42,Math.max(42,hPhys* h*.042));
+  ctx.fillStyle='#d8e7f6';ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,base);ctx.lineTo(right,base+24);ctx.lineTo(left,top+24);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#819ab2';ctx.lineWidth=8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,base);ctx.stroke();ctx.lineCap='butt';
+  ctx.strokeStyle='#8ca5bf';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,base);ctx.stroke();
+  const bx=left+(right-left)*ratio, by=top+(base-top)*ratio;
+  // Ball size is tied to mass, smoothly scaled to stay visible at all slider values.
+  const ballR=11+Math.sqrt(m)*4.2;
+  ctx.fillStyle='#2578df';ctx.beginPath();ctx.arc(bx,by-ballR*.72,ballR,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(bx-ballR*.28,by-ballR*.98,Math.max(2,ballR*.22),0,Math.PI*2);ctx.fill();
+  text('h',left-20,top+5,14,'#236fce',true);ctx.strokeStyle='#16b5c3';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(left-8,top);ctx.lineTo(left-8,base);ctx.stroke();ctx.setLineDash([]);
+  const barX=w*.84,barW=Math.max(22,w*.045),maxH=h*.46,denom=total||1,epH=maxH*(ep/denom),ekH=maxH*(ek/denom),barBottom=h*.83;
+  ctx.fillStyle='#f2a348';ctx.fillRect(barX,barBottom-epH,barW,epH);ctx.fillStyle='#2d83e5';ctx.fillRect(barX+barW+12,barBottom-ekH,barW,ekH);
+  text('Eₚ',barX+2,barBottom+20,12,'#bb7b27',true);text('Eₖ',barX+barW+12,barBottom+20,12,'#246fc5',true);
+  text(`Eₚ = ${ep.toFixed(1)} Дж`,w*.08,h*.9,13,'#b77a28',true);text(`Eₖ = ${ek.toFixed(1)} Дж`,w*.42,h*.9,13,'#2477ce',true);
+  text(`v = ${v.toFixed(2)} м/с`,w*.08,32,15,'#2477ce',true);text(`E = Eₖ + Eₚ = ${total.toFixed(1)} Дж`,w*.08,53,12);text(`m = ${m.toFixed(1)} кг · h₀ = ${h0.toFixed(1)} м`,w*.08,75,12);text('Без трения: полная механическая энергия сохраняется',w*.08,h*.96,11);
+}
+function drawOhm(w,h){
+ grid(w,h);const U=values.U,R=values.R,I=U/R,cx=w*.5,cy=h*.5;
+ // Closed, coherent series loop with source, switch, ammeter and resistor; voltmeter parallel across resistor.
+ const left=w*.18,right=w*.82,top=h*.24,bottom=h*.76;
+ ctx.strokeStyle='#536f89';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,top);ctx.lineTo(right,bottom);ctx.lineTo(left,bottom);ctx.closePath();ctx.stroke();
+ // Battery symbol on left branch
+ ctx.strokeStyle='#233f5b';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(left,cy-22);ctx.lineTo(left,cy+22);ctx.moveTo(left-12,cy-12);ctx.lineTo(left+12,cy-12);ctx.moveTo(left-7,cy+12);ctx.lineTo(left+7,cy+12);ctx.stroke();
+ // Switch on top wire
+ ctx.fillStyle='#fff';ctx.fillRect(cx-62,top-12,86,25);ctx.strokeStyle='#526f89';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx-48,top,4,0,Math.PI*2);ctx.arc(cx+10,top,4,0,Math.PI*2);ctx.moveTo(cx-48,top);ctx.lineTo(cx+4,top-13);ctx.stroke();text('Ключ',cx-42,top-22,11);
+ // Resistor on bottom branch
+ const rx=cx+45,ry=bottom;ctx.fillStyle='#f4c46b';ctx.strokeStyle='#9d6c23';ctx.lineWidth=2;ctx.fillRect(rx-36,ry-12,72,24);ctx.strokeRect(rx-36,ry-12,72,24);text('R',rx-5,ry+5,14,'#714c18',true);
+ // Ammeter series on right branch
+ const ax=right,ay=cy;ctx.fillStyle='#fff';ctx.strokeStyle='#2386cf';ctx.lineWidth=3;ctx.beginPath();ctx.arc(ax,ay,19,0,Math.PI*2);ctx.fill();ctx.stroke();text('A',ax-5,ay+5,15,'#2377bb',true);text('Амперметр',ax+26,ay+4,11);
+ // Voltmeter parallel with resistor: vertical branch from top-right to bottom-right around resistor segment
+ const vx=rx+54;ctx.strokeStyle='#607b94';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(vx,top);ctx.lineTo(vx,cy-19);ctx.moveTo(vx,cy+19);ctx.lineTo(vx,bottom);ctx.stroke();ctx.fillStyle='#fff';ctx.strokeStyle='#22a6bd';ctx.beginPath();ctx.arc(vx,cy,19,0,Math.PI*2);ctx.fill();ctx.stroke();text('V',vx-5,cy+5,15,'#16849a',true);text('Вольтметр',vx+25,cy+4,11);
+ // Current markers circulate on the loop (visual indicator; speed responds to I)
+ for(let i=0;i<9;i++){const phase=(elapsed*Math.max(.15,I*.35)+i/9)%1;let x,y;if(phase<.25){x=left+(right-left)*(phase/.25);y=top;}else if(phase<.5){x=right;y=top+(bottom-top)*((phase-.25)/.25);}else if(phase<.75){x=right-(right-left)*((phase-.5)/.25);y=bottom;}else{x=left;y=bottom-(bottom-top)*((phase-.75)/.25);}ctx.fillStyle='#20a9be';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();}
+ text(`U = ${U} В`,w*.07,h*.1,15,'#2676db',true);text(`R = ${R} Ом`,w*.07,h*.145,13);text(`I = ${I.toFixed(2)} А`,w*.07,h*.19,15,'#17a9b9',true);text('Амперметр — последовательно · вольтметр — параллельно R',w*.07,h*.92,11);
+}
+function drawOptics(w,h){grid(w,h);const betaDeg=values.beta,n2=values.n,n1=1,beta=betaDeg*Math.PI/180,sinAlpha=n2*Math.sin(beta),cx=w*.5,cy=h*.48;const totalInternal=sinAlpha>1,alpha=totalInternal?Math.PI/2:Math.asin(Math.min(1,sinAlpha));const len=Math.min(w,h)*.38;
+ ctx.fillStyle='#d8efff';ctx.fillRect(0,cy,w,h-cy);ctx.fillStyle='#f8fcff';ctx.fillRect(0,0,w,cy);ctx.strokeStyle='#7e9bb6';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();ctx.strokeStyle='#8aa4be';ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(cx,12);ctx.lineTo(cx,h-12);ctx.stroke();ctx.setLineDash([]);
+ if(!totalInternal){ctx.strokeStyle='#f4a73c';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx-len*Math.sin(alpha),cy-len*Math.cos(alpha));ctx.lineTo(cx,cy);ctx.stroke();ctx.strokeStyle='#24a6d6';ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+len*Math.sin(beta),cy+len*Math.cos(beta));ctx.stroke();text(`α = ${(alpha*180/Math.PI).toFixed(1)}°`,w*.07,h*.12,15,'#c48522',true);text(`β = ${betaDeg.toFixed(0)}°`,w*.07,h*.17,15,'#247cc5',true);}else{text('Для выбранных β и n₂ преломлённый луч невозможен',w*.07,h*.14,13,'#b54b42',true);}
+ text(`n₁ = 1.00 (воздух)`,w*.07,h*.22,12);text(`n₂ = ${n2.toFixed(2)}`,w*.07,h*.27,13);text('Воздух',cx+14,cy-12,12);text('Среда 2',cx+14,cy+25,12);text('β и n₂ изменяются ползунками',w*.07,h*.92,12);
+}
+function updateResults(){if(active==='energy'){const m=values.m,h=values.h,g=9.8,L=12,hh=Math.min(h,L*.95),a=g*hh/L,tEnd=Math.sqrt(2*L/a),t=elapsed%(tEnd+1.15),sNow=Math.min(L,.5*a*Math.min(t,tEnd)**2),hNow=Math.max(0,hh*(1-sNow/L)),v=Math.sqrt(Math.max(0,2*g*(hh-hNow))),ek=.5*m*v*v,ep=m*g*hNow,total=ek+ep;$('#result').textContent=`Eₖ = ½mv² = ${ek.toFixed(2)} Дж · Eₚ = mgh = ${ep.toFixed(2)} Дж · E = Eₖ + Eₚ = ${total.toFixed(2)} Дж`;}else if(active==='motion'){$('#result').textContent=`v(t) = ${(values.v0+values.a*elapsed).toFixed(2)} м/с · s(t) = ${(values.v0*elapsed+.5*values.a*elapsed*elapsed).toFixed(2)} м`}else if(active==='ohm'){$('#result').textContent=`I = ${(values.U/values.R).toFixed(3)} А`}else if(active==='optics'){const b=values.beta*Math.PI/180,sa=values.n*Math.sin(b),a=sa<=1?Math.asin(sa)*180/Math.PI:null;$('#result').textContent=a===null?'Выбранные β и n₂ приводят к невозможному преломлению':`β = ${values.beta.toFixed(1)}° · α = ${a.toFixed(2)}°`}}
+function drawAndUpdate(){draw();updateResults();}
+$('#areas').addEventListener('click',e=>{const b=e.target.closest('[data-area]');if(b)showArea(b.dataset.area)});$('#modelGrid').addEventListener('click',e=>{const b=e.target.closest('[data-model]');if(b)openModel(b.dataset.model)});$('#backAreas').onclick=()=>{$('#models').classList.add('hidden');$('#areas').scrollIntoView({behavior:'smooth'})};$('#params').addEventListener('input',e=>{if(!e.target.matches('input[type=range]'))return;const key=e.target.dataset.key;values[key]=Number(e.target.value);if(active==='energy')elapsed=0;const param=catalog[active].params.find(p=>p.key===key);$('#val-'+key).textContent=`${values[key]} ${param.unit}`;drawAndUpdate()});$('#close').onclick=close;$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))close()});$('#play').onclick=()=>{paused=!paused;$('#play').textContent=paused?'▶ Продолжить':'Ⅱ Пауза'};$('#reset').onclick=()=>{elapsed=0;paused=false;catalog[active].params.forEach(p=>values[p.key]=p.val);$('#params').querySelectorAll('input').forEach(i=>i.value=values[i.dataset.key]);catalog[active].params.forEach(p=>$('#val-'+p.key).textContent=`${p.val} ${p.unit}`);$('#play').textContent='Ⅱ Пауза';drawAndUpdate()};window.addEventListener('resize',()=>{if(active){fitCanvas();drawAndUpdate()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&active)close()});
+// Landing decorative cart animation is CSS-based; lab render loops are separate and only run while a model is open.
+})();
