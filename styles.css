@@ -18,3 +18,6 @@
 .time-scrub{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);white-space:nowrap}.time-scrub input{width:min(26vw,170px);accent-color:#2676db}.time-scrub span{font-variant-numeric:tabular-nums;color:var(--blue);min-width:42px}@media(max-width:560px){.time-scrub input{width:110px}.sim-tools{flex-wrap:wrap}}
 
 .subsection-card[data-subsection="oscillations"] .subsection-icon{color:#7c63d7}
+
+/* Collision model dropdown */
+.collision-select{width:100%;border:1px solid #d5e2ed;border-radius:9px;padding:10px;background:#fff;color:var(--ink);font-size:14px}
