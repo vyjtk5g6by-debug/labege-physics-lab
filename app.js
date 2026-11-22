@@ -129,6 +129,7 @@ function drawElectric(w,h){
   const sx=cx-len*.36,sy=cy,wireLen=amp?len*(.35+.065*L):len*.68,ex=sx+wireLen*Math.cos(a),ey=sy-wireLen*Math.sin(a);
   ctx.strokeStyle='#df4b4b';ctx.lineWidth=amp?2+q*.45:3+Math.min(4,v*.35);ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
   drawArrow(sx,sy,wireLen,0,'#df4b4b',Math.cos(a),-Math.sin(a));
+  ctx.strokeStyle='#2676db';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(sx,sy,22,-a,0);ctx.stroke();text('α',sx+24,sy-20,12,'#2676db',true);
   text(amp?'I — направление тока':'v — скорость частицы',ex+8,ey-8,12,'#df4b4b',true);
   // B field vector
   const fieldStrength=Math.max(.1,Math.min(2,B)),fieldTicks=Math.max(2,Math.min(7,Math.round(fieldStrength*3.5)));ctx.save();ctx.globalAlpha=.35+fieldStrength*.3;for(let j=0;j<fieldTicks;j++){const tx=cx-len*.34+j*len*.1;ctx.strokeStyle='#18a8b7';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(tx,cy+len*.18);ctx.lineTo(tx,cy+len*.28);ctx.stroke();}ctx.restore();drawArrow(cx-len*.38,cy+len*.28,len*.76,0,'#18a8b7',1,0);
