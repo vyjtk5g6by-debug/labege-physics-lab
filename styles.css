@@ -21,3 +21,5 @@
 
 /* Collision model dropdown */
 .collision-select{width:100%;border:1px solid #d5e2ed;border-radius:9px;padding:10px;background:#fff;color:var(--ink);font-size:14px}
+
+.collision-select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink)}
