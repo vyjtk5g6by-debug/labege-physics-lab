@@ -117,11 +117,45 @@ function drawElectric(w,h){
  const wire=(points)=>{ctx.strokeStyle='#546f89';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.stroke();};
  const resistor=(x,y,label,val)=>{ctx.fillStyle='#f6c46b';ctx.strokeStyle='#9d6c23';ctx.lineWidth=2;ctx.fillRect(x-32,y-14,64,28);ctx.strokeRect(x-32,y-14,64,28);text(label+' '+val+' Ом',x-45,y-26,12,'#7d571b',true);};
  if(active==='series'||active==='parallel'){
-  wire([[left,top],[right,top],[right,bottom],[left,bottom],[left,top]]);battery();loopDots(.35);
   const r1=active==='series'?values.R1s:values.R1p,r2=active==='series'?values.R2s:values.R2p,U=active==='series'?values.Us:values.Up;
-  if(active==='series'){resistor(cx-55,top,'R₁',r1);resistor(cx+55,top,'R₂',r2);}
-  else{wire([[cx-55,top],[cx-55,bottom]]);wire([[cx+55,top],[cx+55,bottom]]);resistor(cx-55,cy,'R₁',r1);resistor(cx+55,cy,'R₂',r2);}
-  text('Источник U = '+U+' В',w*.06,h*.12,14,'#2676db',true);text(active==='series'?'Последовательно: ток одинаков':'Параллельно: напряжение одинаков',w*.06,h*.92,12);return;
+  if(active==='series'){
+   wire([[left,top],[right,top],[right,bottom],[left,bottom],[left,top]]);battery();loopDots(.35);
+   resistor(cx-55,top,'R₁',r1);resistor(cx+55,top,'R₂',r2);
+  }else{
+   const bx1=cx-58,bx2=cx+58,half=17;
+   // Two common rails and two real resistor branches. There is deliberately
+   // no wire joining the rails on the far right (that would short the circuit).
+   wire([[left,top],[right,top]]);
+   wire([[right,bottom],[left,bottom]]);
+   wire([[left,top],[left,cy-24]]);
+   wire([[left,cy+24],[left,bottom]]);
+   battery();
+   for(const bx of [bx1,bx2]){
+    wire([[bx,top],[bx,cy-half]]);
+    wire([[bx,cy+half],[bx,bottom]]);
+   }
+   resistor(bx1,cy,'R₁',r1);resistor(bx2,cy,'R₂',r2);
+   // Moving charge markers follow each complete branch, including through
+   // the resistor body, then return along the lower rail to the source.
+   const drawBranchDots=(bx,phase)=>{
+    const pts=[[left,top],[bx,top],[bx,bottom],[left,bottom],[left,top]];
+    const lengths=[];let total=0;
+    for(let k=1;k<pts.length;k++){const d=Math.hypot(pts[k][0]-pts[k-1][0],pts[k][1]-pts[k-1][1]);lengths.push(d);total+=d;}
+    for(let n=0;n<5;n++){
+     let d=((elapsed*.32+phase+n/5)%1)*total,x=pts[0][0],y=pts[0][1];
+     for(let k=0;k<lengths.length;k++){
+      if(d<=lengths[k]){const t=lengths[k]?d/lengths[k]:0;x=pts[k][0]+(pts[k+1][0]-pts[k][0])*t;y=pts[k][1]+(pts[k+1][1]-pts[k][1])*t;break;}
+      d-=lengths[k];
+     }
+     ctx.fillStyle='#18b9c8';ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();
+    }
+   };
+   drawBranchDots(bx1,0);drawBranchDots(bx2,.18);
+   text('I = I₁ + I₂',cx-42,bottom+34,12,'#168fa5',true);
+  }
+  text('Источник U = '+U+' В',w*.06,h*.12,14,'#2676db',true);
+  text(active==='series'?'Последовательно: ток одинаков':'Параллельно: ток разделяется по двум ветвям и проходит через R₁ и R₂',w*.06,h*.92,12);
+  return;
  }
  const isPower=active==='power',U=isPower?values.Uw:values.Ih*values.Rh,loadR=isPower?values.Rw:values.Rh,I=isPower?values.Uw/values.Rw:values.Ih;
  wire([[left,top],[cx-40,top],[cx+40,top],[right,top],[right,bottom],[left,bottom],[left,top]]);
