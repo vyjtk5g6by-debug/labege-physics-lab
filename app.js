@@ -155,7 +155,7 @@ function drawElectric(w,h){
   const N=values.Nind,zStart=values.zind/100,vSet=values.vind,a=values.aind/100,R=values.Rind,B0=.2,z=Math.max(-.2,Math.min(.2,zStart+vSet*elapsed)),v=(paused||(z===.2&&vSet>0)||(z===-.2&&vSet<0))?0:vSet;
   const phi0=B0*Math.PI*a*a,den=1+z*z/(a*a),phi=phi0/Math.pow(den,1.5);
   const dPhidz=-3*z*phi0/(a*a*Math.pow(den,2.5)),emf=-N*dPhidz*v,current=emf/R;
-  const xCoil=cx+len*.15,xMag=cx-len*.45+(z*100+20)/40*len*.55,magnetW=54,magnetH=27;
+  const xCoil=cx+len*.15,xMag=xCoil+(z/.2)*len*.42,magnetW=54,magnetH=27;
   const coilRx=16,coilRy=len*.30,turns=Math.max(5,Math.min(22,Math.round(N/9)));
   ctx.strokeStyle='#c58a36';ctx.lineWidth=2.2;
   for(let i=0;i<turns;i++){const y=cy-coilRy+2*coilRy*i/Math.max(1,turns-1);ctx.beginPath();ctx.ellipse(xCoil,y,coilRx,7,0,0,Math.PI*2);ctx.stroke();}
@@ -163,9 +163,11 @@ function drawElectric(w,h){
   ctx.fillStyle='#d94d4d';ctx.fillRect(xMag,cy-magnetH/2,magnetW/2,magnetH);
   text('S',xMag-magnetW*.34,cy+5,14,'#fff',true);text('N',xMag+magnetW*.16,cy+5,14,'#fff',true);
   for(let k=-2;k<=2;k++)drawArrow(xCoil-55,cy+k*13,105,0,'#3287c8',1,0);
+  text('Bмагн',xCoil-42,cy-coilRy-10,11,'#3287c8',true);
   if(Math.abs(current)>1e-10){
     const dir=current>0?1:-1;
     for(let k=-1;k<=1;k++)drawArrow(xCoil-28,cy+k*18,56,0,'#16a1a6',dir,0);
+    text('Bинд',xCoil+32,cy-coilRy-10,11,'#168f98',true);
     for(let k=-1;k<=1;k++)drawArrow(xCoil-coilRx,cy+k*18,12,0,'#16a1a6',0,-dir);
     text(current>0?'Iинд ↻':'Iинд ↺',xCoil+coilRx+12,cy+coilRy*.65,13,'#168f98',true);
   }else text('Iинд = 0',xCoil+coilRx+12,cy+coilRy*.65,13,'#168f98',true);
