@@ -158,26 +158,37 @@ function drawElectric(w,h){
   text('Правило правой руки: пальцы по току в витках, большой палец к N',w*.07,h*.91,11);
   return;
  }if(active==='magAmpere'||active==='magLorentz'){
-  const amp=active==='magAmpere',q=amp?values.Ia:values.qL,v=amp?1:values.vL,B=amp?values.Ba:values.BL,L=amp?values.La/100:1,angle=amp?values.angA:values.angL,a=angle*Math.PI/180;
-  const signedForce=amp?q*B*L*Math.sin(a):q*1e-6*v*B*Math.sin(a),force=Math.abs(signedForce),originX=cx,originY=cy+len*.08,ray=len*.55;
-  // Uniform magnetic field is drawn as parallel arrows; I or v is a separate vector.
-  for(let j=-2;j<=2;j++)drawArrow(cx-len*.58,originY+j*19,len*1.16,0,'#18a8b7',1,0);
-  drawArrow(originX,originY,ray,0,'#18a8b7',1,0);
-  text('B',originX+ray+8,originY-8,13,'#168fa5',true);
+  const amp=active==='magAmpere';
+  const q=amp?values.Ia:values.qL, speed=amp?values.Ia:values.vL;
+  const B=amp?values.Ba:values.BL, L=amp?values.La/100:1;
+  const angle=amp?values.angA:values.angL, a=angle*Math.PI/180;
+  const signedForce=amp?q*B*L*Math.sin(a):q*1e-6*speed*B*Math.sin(a);
+  const force=Math.abs(signedForce), maxForce=amp?2:.0002;
+  const strength=Math.max(0,Math.min(1,force/maxForce));
+  const originX=cx,originY=cy+len*.08,baseRay=len*.55;
+  const fieldRay=baseRay*(.25+.75*(B/2));
+  for(let j=-2;j<=2;j++)drawArrow(cx-fieldRay*.55,originY+j*19,fieldRay,0,'#18a8b7',1,0);
+  text('B = '+B.toFixed(1)+' Тл',cx+fieldRay*.55+8,originY-10,12,'#168fa5',true);
+  const vectorMagnitude=amp?q/10:speed/10;
+  const ray=baseRay*(.25+.75*vectorMagnitude);
   const ux=Math.cos(a),uy=-Math.sin(a);
   drawArrow(originX,originY,ray,0,'#df4b4b',ux,uy);
   text(amp?'I':'v',originX+ray*ux+8,originY+ray*uy-8,13,'#d94d4d',true);
-  ctx.strokeStyle='#2676db';ctx.lineWidth=1.7;ctx.beginPath();ctx.arc(originX,originY,25,-a,0);ctx.stroke();text('α',originX+30,originY-17,13,'#2676db',true);
-  const fr=10+Math.min(17,force/(amp?2:.002)*14),fx=originX,fy=originY-len*.34,into=q>0;
+  ctx.strokeStyle='#2676db';ctx.lineWidth=1.7;ctx.beginPath();ctx.arc(originX,originY,25,-a,0);ctx.stroke();
+  text('α = '+angle+'°',originX+29,originY-19,12,'#2676db',true);
+  const fr=8+30*strength,fx=originX,fy=originY-len*.36;
   ctx.strokeStyle='#d99a2b';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(fx,fy,fr,0,Math.PI*2);ctx.stroke();
+  const into=signedForce>0;
   if(force>1e-12){
-    if(into){ctx.beginPath();ctx.arc(fx,fy,fr*.42,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(fx-fr*.7,fy-fr*.7);ctx.lineTo(fx+fr*.7,fy+fr*.7);ctx.moveTo(fx-fr*.7,fy+fr*.7);ctx.lineTo(fx+fr*.7,fy-fr*.7);ctx.stroke();text('F ⊗ — в плоскость рисунка',fx+fr+7,fy+4,11,'#b77d1e',true);}
-    else{ctx.beginPath();ctx.arc(fx,fy,fr*.42,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(fx,fy,2.5,0,Math.PI*2);ctx.fillStyle='#d99a2b';ctx.fill();text('F ⊙ — из плоскости рисунка',fx+fr+7,fy+4,11,'#b77d1e',true);}
+   ctx.beginPath();ctx.arc(fx,fy,fr*.38,0,Math.PI*2);ctx.stroke();
+   if(into){ctx.beginPath();ctx.moveTo(fx-fr*.68,fy-fr*.68);ctx.lineTo(fx+fr*.68,fy+fr*.68);ctx.moveTo(fx-fr*.68,fy+fr*.68);ctx.lineTo(fx+fr*.68,fy-fr*.68);ctx.stroke();}
+   else{ctx.beginPath();ctx.arc(fx,fy,Math.max(2,fr*.12),0,Math.PI*2);ctx.fillStyle='#d99a2b';ctx.fill();}
+   text(into?'F ⊗ — в плоскость рисунка':'F ⊙ — из плоскости рисунка',fx+fr+7,fy+4,11,'#b77d1e',true);
   }else text('F = 0',fx+fr+7,fy+4,12,'#b77d1e',true);
   text('α — угол между '+(amp?'I':'v')+' и B',w*.07,25,12,'#2676db',true);
-  text(amp?'I='+q+' А · L='+values.La+' см · B='+B+' Тл':'q='+q+' мкКл · v='+v+' м/с · B='+B+' Тл',w*.07,49,12);
+  text(amp?'I='+q.toFixed(1)+' А · L='+values.La+' см · B='+B.toFixed(1)+' Тл':'q='+q+' мкКл · v='+speed.toFixed(1)+' м/с · B='+B.toFixed(1)+' Тл',w*.07,49,12);
   text('F = '+force.toExponential(3)+' Н',w*.07,73,14,'#b77d1e',true);
-  text(amp?'F = BIL sin α':'F = |q|vB sin α; знак q задаёт направление F',w*.07,h*.91,11);
+  text('Размер символа силы показывает её модуль; ⊗ — в экран, ⊙ — из экрана',w*.07,h*.91,10);
   return;
  }if(active==='magCurrents'){const same=values.dirC===0,I1=values.Ic1,I2=values.Ic2,d=values.dc,sep=70+d*8,force=Math.min(60,I1*I2/d*2),x1=cx-sep/2,x2=cx+sep/2;for(const x of [x1,x2]){ctx.strokeStyle='#526f89';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(x,cy-len*.55);ctx.lineTo(x,cy+len*.55);ctx.stroke();}drawArrow(x1,cy,45,0,'#df4b4b',0,-1);drawArrow(x2,cy,45,0,'#df4b4b',0,same?-1:1);text('I₁ ↑',x1-18,cy-len*.58-8,12,'#d94d4d',true);text(same?'I₂ ↑':'I₂ ↓',x2-18,cy-len*.58-8,12,'#d94d4d',true);drawArrow(x1,cy,40,0,'#e0a12c',same?1:-1,0);drawArrow(x2,cy,40,0,'#e0a12c',same?-1:1,0);drawArrow(x1,cy-len*.35,force,0,'#18a8b7',same?1:-1,0);drawArrow(x2,cy-len*.35,force,0,'#18a8b7',same?-1:1,0);text('F₁₂',x1+(same?force+4:-force-28),cy-len*.35-5,11,'#18a8b7',true);text('F₂₁',x2+(same?-force-28:force+4),cy-len*.35-5,11,'#18a8b7',true);text('I₁='+I1+' А · I₂='+I2+' А · d='+d+' см',w*.07,30,13,'#2676db',true);text(same?'Токи одного направления':'Токи противоположных направлений',w*.07,55,13);text(same?'Притяжение':'Отталкивание',w*.07,80,13,'#c48522',true);text('Смещение проводников и сила меняются',w*.07,h*.91,12);return;} if(active==='indFlux'){const B=values.Bind,A=values.Aind,theta=values.phiAng*Math.PI/180,phi=B*A*1e-4*Math.cos(theta),rad=Math.max(30,Math.min(95,25+A*3)),pulse=(elapsed*1.4)%1;ctx.save();ctx.translate(cx,cy);ctx.rotate(theta+Math.PI/2);ctx.strokeStyle='#526f89';ctx.lineWidth=3;ctx.strokeRect(-rad,-rad*.55,rad*2,rad*1.1);ctx.restore();drawArrow(cx,cy,Math.min(75,rad*.8),0,'#df4b4b',Math.cos(theta),Math.sin(theta));text('n',cx+Math.cos(theta)*rad*.8+7,cy+Math.sin(theta)*rad*.8,12,'#df4b4b',true);const n=Math.max(2,Math.min(10,Math.round(B*5)));ctx.save();ctx.globalAlpha=.2+.75*Math.abs(Math.cos(theta));for(let i=-n;i<=n;i++){drawArrow(cx-len*.48,cy+i*len*.055,len*.96,0,'#18a8b7',1,0);}ctx.restore();for(let i=0;i<4;i++){const x=cx-len*.4+pulse*len*.8;ctx.fillStyle='#18a8b7';ctx.beginPath();ctx.arc(x,cy+(i-1.5)*len*.1,4,0,Math.PI*2);ctx.fill();}text('B',cx+len*.42,cy-10,12,'#18a8b7',true);text('Φ = '+phi.toFixed(5)+' Вб',w*.07,30,14,'#2676db',true);text('B='+B+' Тл · S='+A+' см² · θ='+values.phiAng+'°',w*.07,55,12);text('Площадь, угол и плотность магнитного поля видны',w*.07,h*.91,12);return;} if(active==='indFaraday'||active==='indLenz'){
   const N=values.Nind,zStart=values.zind/100,vSet=values.vind,a=values.aind/100,R=values.Rind,B0=.2,z=Math.max(-.2,Math.min(.2,zStart+vSet*elapsed)),v=(paused||(z===.2&&vSet>0)||(z===-.2&&vSet<0))?0:vSet;
