@@ -8,5 +8,5 @@ The site contains 50 interactive models:
 - Optics: reflection, refraction, lenses, mirrors, and dispersion.
 
 Each model has its own parameters, formula, calculated result, and Canvas visualization.
-The statics subsection includes cable equilibrium, a lever, and a beam on two supports.
+The statics subsection includes cable equilibrium, first-class and second-class levers.
 The layout supports mobile screens.
