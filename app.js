@@ -28,7 +28,7 @@ magCurrents:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · МАГН�
 indFlux:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · ЭЛЕКТРОМАГНИТНАЯ ИНДУКЦИЯ',title:'Магнитный поток',desc:'Измени индукцию, площадь контура и угол между полем и нормалью к поверхности.',params:[{key:'Bind',label:'Индукция B',min:.1,max:2,step:.1,val:.5,unit:'Тл'},{key:'Aind',label:'Площадь S',min:1,max:20,step:1,val:10,unit:'см²'},{key:'phiAng',label:'Угол θ',min:0,max:90,step:5,val:0,unit:'°'}],formula:'Φ = BS cos θ',explain:'Магнитный поток характеризует поле через поверхность. Угол θ здесь задан между B и нормалью к поверхности.'},
 indFaraday:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · ЭЛЕКТРОМАГНИТНАЯ ИНДУКЦИЯ',title:'Закон электромагнитной индукции Фарадея',desc:'Двигай магнит через катушку. Изменение положения и скорости меняет магнитный поток и ЭДС; останови магнит — ЭДС станет нулевой.',params:[{key:'Nind',label:'Число витков N',min:10,max:200,step:10,val:100,unit:''},{key:'zind',label:'Положение магнита x',min:-20,max:20,step:1,val:-10,unit:'см'},{key:'vind',label:'Скорость магнита v',min:-2,max:2,step:.1,val:1,unit:'м/с'},{key:'aind',label:'Радиус катушки a',min:3,max:8,step:.5,val:5,unit:'см'},{key:'Rind',label:'Сопротивление R',min:10,max:100,step:5,val:20,unit:'Ом'}],formula:'ε = −N·dΦ₁/dt',explain:'Упрощённая модель осевого магнита: поток через виток зависит от расстояния x. ЭДС появляется только при изменении потока. Чем быстрее движется магнит и больше витков, тем больше |ε|.'},
 indLenz:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · ЭЛЕКТРОМАГНИТНАЯ ИНДУКЦИЯ',title:'Правило Ленца',desc:'Наблюдай за магнитом, катушкой и током. Индукционный ток создаёт поле, противодействующее изменению магнитного потока.',params:[{key:'Nind',label:'Число витков N',min:10,max:200,step:10,val:100,unit:''},{key:'zind',label:'Положение магнита x',min:-20,max:20,step:1,val:-10,unit:'см'},{key:'vind',label:'Скорость магнита v',min:-2,max:2,step:.1,val:1,unit:'м/с'},{key:'aind',label:'Радиус катушки a',min:3,max:8,step:.5,val:5,unit:'см'},{key:'Rind',label:'Сопротивление R',min:10,max:100,step:5,val:20,unit:'Ом'}],formula:'Bинд противодействует изменению Φ; ε = −N·dΦ₁/dt',explain:'Когда магнит приближается, катушка препятствует увеличению потока; когда удаляется — препятствует его уменьшению. Поэтому сила со стороны катушки тормозит магнит в обоих случаях.'},
-indTransformer:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · ЭЛЕКТРОМАГНИТНАЯ ИНДУКЦИЯ',title:'Трансформатор',desc:'Меняй напряжение на первичной обмотке и число витков обеих обмоток.',params:[{key:'Utr',label:'Напряжение U₁',min:1,max:120,max:120,step:1,val:24,unit:'В'},{key:'N1tr',label:'Витки N₁',min:10,max:500,step:10,val:100,unit:''},{key:'N2tr',label:'Витки N₂',min:10,max:500,step:10,val:200,unit:''}],formula:'U₂/U₁ = N₂/N₁',explain:'Идеальный трансформатор изменяет переменное напряжение в соответствии с отношением числа витков. Он работает благодаря переменному магнитному потоку.'},
+indTransformer:{area:'electricity',tag:'ЭЛЕКТРОДИНАМИКА · ЭЛЕКТРОМАГНИТНАЯ ИНДУКЦИЯ',title:'Трансформатор',desc:'Меняй напряжение на первичной обмотке и число витков обеих обмоток.',params:[{key:'Utr',label:'Напряжение U₁',min:1,max:120,step:1,val:24,unit:'В'},{key:'N1tr',label:'Витки N₁',min:10,max:500,step:10,val:100,unit:''},{key:'N2tr',label:'Витки N₂',min:10,max:500,step:10,val:200,unit:''}],formula:'U₂/U₁ = N₂/N₁',explain:'Идеальный трансформатор изменяет переменное напряжение в соответствии с отношением числа витков. Он работает благодаря переменному магнитному потоку.'},
 reflection:{area:'optics',tag:'ОПТИКА · ОТРАЖЕНИЕ',title:'Отражение света',desc:'Измени угол падения на зеркало.',params:[{key:'ar',label:'Угол падения α',min:5,max:80,step:1,val:35,unit:'°'}],formula:'α = β',explain:'Угол отражения равен углу падения. Углы измеряются от нормали.'},
 lens:{area:'optics',tag:'ОПТИКА · ЛИНЗЫ',title:'Собирающая линза',desc:'Меняй фокусное расстояние и расстояние до предмета.',params:[{key:'fl',label:'Фокусное расстояние f',min:5,max:40,step:1,val:15,unit:'см'},{key:'do',label:'Расстояние до предмета d',min:10,max:80,step:1,val:40,unit:'см'}],formula:'1/f = 1/d + 1/F',explain:'Положение изображения определяется формулой тонкой линзы; тип и размер изображения зависят от положения предмета.'},diverging:{area:'optics',tag:'ОПТИКА · ЛИНЗЫ',title:'Рассеивающая линза',desc:'У рассеивающей линзы фокусное расстояние отрицательное; изображение виртуальное, прямое и уменьшенное.',params:[{key:'fd',label:'|f| фокусное расстояние',min:5,max:40,step:1,val:15,unit:'см'},{key:'dd',label:'Расстояние до предмета d',min:10,max:80,step:1,val:40,unit:'см'}],formula:'1/f = 1/d + 1/F (f < 0)',explain:'Рассеивающая линза формирует виртуальное, прямое и уменьшенное изображение.'},
 prism:{area:'optics',tag:'ОПТИКА · ДИСПЕРСИЯ',title:'Дисперсия света',desc:'Наблюдай разложение белого света в спектр.',params:[{key:'dp',label:'Угол призмы',min:20,max:60,step:1,val:40,unit:'°'}],formula:'Отклонение зависит от длины волны',explain:'Разные длины волн преломляются по-разному, разделяя белый свет на цветовой спектр.'},
@@ -119,7 +119,7 @@ function drawElectric(w,h){
  if(active==='series'||active==='parallel'){
   const r1=active==='series'?values.R1s:values.R1p,r2=active==='series'?values.R2s:values.R2p,U=active==='series'?values.Us:values.Up;
   if(active==='series'){
-   wire([[left,top],[right,top],[right,bottom],[left,bottom],[left,top]]);battery();loopDots(.35);
+   wire([[left,top],[right,top],[right,bottom],[left,bottom],[left,top]]);battery();const seriesI=U/(r1+r2);loopDots(Math.min(1,seriesI*.55));
    resistor(cx-55,top,'R₁',r1);resistor(cx+55,top,'R₂',r2);
   }else{
    const bx1=cx-58,bx2=cx+58,half=17;
@@ -137,12 +137,12 @@ function drawElectric(w,h){
    resistor(bx1,cy,'R₁',r1);resistor(bx2,cy,'R₂',r2);
    // Moving charge markers follow each complete branch, including through
    // the resistor body, then return along the lower rail to the source.
-   const drawBranchDots=(bx,phase)=>{
+   const drawBranchDots=(bx,phase,current)=>{if(current<=0)return;
     const pts=[[left,top],[bx,top],[bx,bottom],[left,bottom],[left,top]];
     const lengths=[];let total=0;
     for(let k=1;k<pts.length;k++){const d=Math.hypot(pts[k][0]-pts[k-1][0],pts[k][1]-pts[k-1][1]);lengths.push(d);total+=d;}
     for(let n=0;n<5;n++){
-     let d=((elapsed*.32+phase+n/5)%1)*total,x=pts[0][0],y=pts[0][1];
+     let d=((elapsed*Math.min(1,current*.55)+phase+n/5)%1)*total,x=pts[0][0],y=pts[0][1];
      for(let k=0;k<lengths.length;k++){
       if(d<=lengths[k]){const t=lengths[k]?d/lengths[k]:0;x=pts[k][0]+(pts[k+1][0]-pts[k][0])*t;y=pts[k][1]+(pts[k+1][1]-pts[k][1])*t;break;}
       d-=lengths[k];
@@ -150,7 +150,7 @@ function drawElectric(w,h){
      ctx.fillStyle='#18b9c8';ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();
     }
    };
-   drawBranchDots(bx1,0);drawBranchDots(bx2,.18);
+   drawBranchDots(bx1,0,U/r1);drawBranchDots(bx2,.18,U/r2);
    text('I = I₁ + I₂',cx-42,bottom+34,12,'#168fa5',true);
   }
   text('Источник U = '+U+' В',w*.06,h*.12,14,'#2676db',true);
@@ -159,8 +159,8 @@ function drawElectric(w,h){
  }
  const isPower=active==='power',U=isPower?values.Uw:values.Ih*values.Rh,loadR=isPower?values.Rw:values.Rh,I=isPower?values.Uw/values.Rw:values.Ih;
  wire([[left,top],[cx-40,top],[cx+40,top],[right,top],[right,bottom],[left,bottom],[left,top]]);
- battery();resistor(cx,top,isPower?'R нагрузка':'R нагревателя',loadR);loopDots(Math.min(.8,Math.max(.12,I*.18)));
- if(!isPower){const glow=Math.min(1,values.Ih/5);ctx.fillStyle='rgba(245,115,42,'+(0.14+glow*.35)+')';ctx.beginPath();ctx.arc(cx,top,45+glow*18,0,Math.PI*2);ctx.fill();}
+ battery();resistor(cx,top,isPower?'R нагрузка':'R нагревателя',loadR);loopDots(Math.min(1,I*.35));
+ if(!isPower){const heat=values.Ih**2*values.Rh*values.th,heatNorm=Math.min(1,Math.log1p(heat)/Math.log1p(5**2*20*60));ctx.fillStyle='rgba(245,115,42,'+(0.08+heatNorm*.52)+')';ctx.beginPath();ctx.arc(cx,top,35+heatNorm*30,0,Math.PI*2);ctx.fill();}
  text(isPower?'U = '+values.Uw+' В · R = '+values.Rw+' Ом':'I = '+values.Ih+' А · R = '+values.Rh+' Ом',w*.06,h*.12,14,'#2676db',true);
  text(isPower?'P = '+(values.Uw*I).toFixed(2)+' Вт':'Q = '+(values.Ih**2*values.Rh*values.th).toFixed(1)+' Дж',w*.06,h*.18,15,'#c48522',true);
  text(isPower?'P = UI = U²/R':'Q = I²Rt; t = '+values.th+' с',w*.06,h*.92,12);
@@ -177,7 +177,7 @@ function drawElectric(w,h){
   for(let i=0;i<turns;i++){
     const x=x1+(x2-x1)*i/Math.max(1,turns-1);
     ctx.beginPath();ctx.ellipse(x,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
-    drawArrow(x+rx,cy,12,0,'#df4b4b',0,-sign);
+    if(I!==0)drawArrow(x+rx,cy,12,0,'#df4b4b',0,-sign);
   }
   const bNorm=Math.min(1,Math.abs(B)/.003),fieldCount=I===0?0:Math.max(1,Math.round(2+7*bNorm));
   for(let j=0;j<fieldCount;j++){
@@ -200,8 +200,8 @@ function drawElectric(w,h){
   const force=Math.abs(signedForce), maxForce=amp?2:.0002;
   const strength=Math.max(0,Math.min(1,force/maxForce));
   const originX=cx,originY=cy+len*.08,baseRay=len*.55;
-  const fieldRay=baseRay*(.25+.75*(B/2));
-  for(let j=-2;j<=2;j++)drawArrow(cx-fieldRay*.55,originY+j*19,fieldRay,0,'#18a8b7',1,0);
+  const fieldRay=baseRay*(B/2);
+  if(B>0)for(let j=-2;j<=2;j++)drawArrow(cx-fieldRay*.55,originY+j*19,fieldRay,0,'#18a8b7',1,0);
   text('B = '+B.toFixed(1)+' Тл',cx+fieldRay*.55+8,originY-10,12,'#168fa5',true);
   const vectorMagnitude=amp?q/10:speed/10;
   const ray=baseRay*(.25+.75*vectorMagnitude);
@@ -229,7 +229,7 @@ function drawElectric(w,h){
   const phi0=B0*Math.PI*a*a,den=1+z*z/(a*a),phi=phi0/Math.pow(den,1.5);
   const dPhidz=-3*z*phi0/(a*a*Math.pow(den,2.5)),emf=-N*dPhidz*v,current=emf/R;
   const xCoil=cx+len*.15,xMag=xCoil+(z/.2)*len*.42,magnetW=54,magnetH=27;
-  const coilRx=16,coilRy=len*.30,turns=Math.max(5,Math.min(22,Math.round(N/9)));
+  const coilRx=16,coilRy=len*(.18+.25*((a-.03)/.05)),turns=Math.max(5,Math.min(22,Math.round(N/9)));
   ctx.strokeStyle='#c58a36';ctx.lineWidth=2.2;
   for(let i=0;i<turns;i++){const y=cy-coilRy+2*coilRy*i/Math.max(1,turns-1);ctx.beginPath();ctx.ellipse(xCoil,y,coilRx,7,0,0,Math.PI*2);ctx.stroke();}
   ctx.fillStyle='#347ac0';ctx.fillRect(xMag-magnetW/2,cy-magnetH/2,magnetW/2,magnetH);
@@ -237,22 +237,23 @@ function drawElectric(w,h){
   text('S',xMag-magnetW*.34,cy+5,14,'#fff',true);text('N',xMag+magnetW*.16,cy+5,14,'#fff',true);
   for(let k=-2;k<=2;k++)drawArrow(xCoil-55,cy+k*13,105,0,'#3287c8',1,0);
   text('Bмагн',xCoil-42,cy-coilRy-10,11,'#3287c8',true);
+  const inducedCurrentNorm=Math.min(1,Math.abs(current)/50);
   if(Math.abs(current)>1e-10){
-    const dir=current>0?1:-1;
-    for(let k=-1;k<=1;k++)drawArrow(xCoil-28,cy+k*18,56,0,'#16a1a6',dir,0);
+    const dir=current>0?1:-1,inducedLen=12+44*inducedCurrentNorm;
+    for(let k=-1;k<=1;k++)drawArrow(xCoil-28,cy+k*18,inducedLen,0,'#16a1a6',dir,0);
     text('Bинд',xCoil+32,cy-coilRy-10,11,'#168f98',true);
     for(let k=-1;k<=1;k++)drawArrow(xCoil-coilRx,cy+k*18,12,0,'#16a1a6',0,-dir);
     text(current>0?'Iинд ↻':'Iинд ↺',xCoil+coilRx+12,cy+coilRy*.65,13,'#168f98',true);
   }else text('Iинд = 0',xCoil+coilRx+12,cy+coilRy*.65,13,'#168f98',true);
   const motion=v===0?'магнит неподвижен':v>0?'движение →':'движение ←';
   if(v!==0)drawArrow(xMag+magnetW*.45,cy+magnetH*.9,Math.min(48,Math.abs(v)*20),0,'#d94d4d',v>0?1:-1,0);
-  if(active==='indLenz'&&Math.abs(current)>1e-10)drawArrow(xMag-magnetW*.5,cy+magnetH*1.55,25,0,'#c58a36',v>0?-1:1,0);
+  if(active==='indLenz'&&Math.abs(current)>1e-10)drawArrow(xMag-magnetW*.5,cy+magnetH*1.55,12+28*inducedCurrentNorm,0,'#c58a36',v>0?-1:1,0);
   text('x = '+(z*100).toFixed(1)+' см · '+motion,w*.07,25,12,'#2676db',true);
   text('Φ₁ = '+phi.toExponential(3)+' Вб · N = '+N,w*.07,49,12);
   text('ε = '+emf.toExponential(3)+' В · I = '+current.toExponential(3)+' А',w*.07,73,12,'#168f98',true);
   text(active==='indLenz'?(v===0?'Поток не меняется — индукционного тока нет':'Сила катушки направлена против движения магнита'):(v===0?'Поток есть, но магнит стоит: ЭДС равна нулю':'Быстрее движение → быстрее меняется поток → больше ЭДС'),w*.07,h*.91,11);
   return;
- }if(active==='indTransformer'){const U1=values.Utr,N1=values.N1tr,N2=values.N2tr,U2=U1*N2/N1,loops1=Math.max(3,Math.min(15,Math.round(N1/35))),loops2=Math.max(3,Math.min(15,Math.round(N2/35))),phase=Math.sin(elapsed*2.5),flux=Math.abs(phase);ctx.strokeStyle='#8b9cb2';ctx.lineWidth=8;ctx.strokeRect(cx-42,cy-len*.3,84,len*.6);ctx.strokeStyle='#d8a345';ctx.lineWidth=3+flux*2;for(let i=0;i<loops1;i++){ctx.beginPath();ctx.ellipse(cx-58,cy,16,8+i*2,0,0,Math.PI*2);ctx.stroke();}for(let i=0;i<loops2;i++){ctx.beginPath();ctx.ellipse(cx+58,cy,16,8+i*2,0,0,Math.PI*2);ctx.stroke();}const bLen=Math.min(90,flux*90);if(bLen>2)drawArrow(cx,cy-len*.25,bLen,0,'#18a8b7',0,phase>=0?-1:1);text('B',cx+10,cy-len*.25-8,12,'#18a8b7',true);text('U₁='+U1+' В · U₂='+U2.toFixed(2)+' В',w*.07,30,14,'#2676db',true);text('N₁='+N1+' · N₂='+N2, w*.07,55,13);text('Витки меняются с N · поток пульсирует',w*.07,h*.91,12);return;}
+ }if(active==='indTransformer'){const U1=values.Utr,N1=values.N1tr,N2=values.N2tr,U2=U1*N2/N1,loops1=Math.max(3,Math.min(15,Math.round(N1/35))),loops2=Math.max(3,Math.min(15,Math.round(N2/35))),phase=Math.sin(elapsed*2.5+Math.PI/2),flux=Math.abs(phase)*Math.min(1,(U1/N1)/.24);ctx.strokeStyle='#8b9cb2';ctx.lineWidth=8;ctx.strokeRect(cx-42,cy-len*.3,84,len*.6);ctx.strokeStyle='#d8a345';ctx.lineWidth=3+flux*2;for(let i=0;i<loops1;i++){ctx.beginPath();ctx.ellipse(cx-58,cy,16,8+i*2,0,0,Math.PI*2);ctx.stroke();}for(let i=0;i<loops2;i++){ctx.beginPath();ctx.ellipse(cx+58,cy,16,8+i*2,0,0,Math.PI*2);ctx.stroke();}const bLen=Math.min(90,flux*90);if(bLen>2)drawArrow(cx,cy-len*.25,bLen,0,'#18a8b7',0,phase>=0?-1:1);text('B',cx+10,cy-len*.25-8,12,'#18a8b7',true);text('U₁='+U1+' В · U₂='+U2.toFixed(2)+' В',w*.07,30,14,'#2676db',true);text('N₁='+N1+' · N₂='+N2, w*.07,55,13);text('Витки меняются с N · поток пульсирует',w*.07,h*.91,12);return;}
 }function drawOhm(w,h){
  grid(w,h);const U=values.U,R=values.R,I=U/R,cx=w*.5,cy=h*.5;
  // Closed, coherent series loop with source, switch, ammeter and resistor; voltmeter parallel across resistor.
@@ -261,15 +262,15 @@ function drawElectric(w,h){
  // Battery symbol on left branch
  ctx.strokeStyle='#233f5b';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(left,cy-22);ctx.lineTo(left,cy+22);ctx.moveTo(left-12,cy-12);ctx.lineTo(left+12,cy-12);ctx.moveTo(left-7,cy+12);ctx.lineTo(left+7,cy+12);ctx.stroke();
  // Switch on top wire
- ctx.fillStyle='#fff';ctx.fillRect(cx-62,top-12,86,25);ctx.strokeStyle='#526f89';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx-48,top,4,0,Math.PI*2);ctx.arc(cx+10,top,4,0,Math.PI*2);ctx.moveTo(cx-48,top);ctx.lineTo(cx+4,top-13);ctx.stroke();text('Ключ',cx-42,top-22,11);
+ ctx.fillStyle='#fff';ctx.fillRect(cx-62,top-12,86,25);ctx.strokeStyle='#526f89';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx-48,top,4,0,Math.PI*2);ctx.arc(cx+10,top,4,0,Math.PI*2);ctx.moveTo(cx-48,top);ctx.lineTo(cx+10,top);ctx.stroke();text('Ключ замкнут',cx-51,top-22,11);
  // Resistor on bottom branch
  const rx=cx+45,ry=bottom;ctx.fillStyle='#f4c46b';ctx.strokeStyle='#9d6c23';ctx.lineWidth=2;ctx.fillRect(rx-36,ry-12,72,24);ctx.strokeRect(rx-36,ry-12,72,24);text('R',rx-5,ry+5,14,'#714c18',true);
  // Ammeter series on right branch
  const ax=right,ay=cy;ctx.fillStyle='#fff';ctx.strokeStyle='#2386cf';ctx.lineWidth=3;ctx.beginPath();ctx.arc(ax,ay,19,0,Math.PI*2);ctx.fill();ctx.stroke();text('A',ax-5,ay+5,15,'#2377bb',true);text('Амперметр',ax+26,ay+4,11);
  // Voltmeter parallel with resistor: vertical branch from top-right to bottom-right around resistor segment
- const vx=rx+54;ctx.strokeStyle='#607b94';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(vx,top);ctx.lineTo(vx,cy-19);ctx.moveTo(vx,cy+19);ctx.lineTo(vx,bottom);ctx.stroke();ctx.fillStyle='#fff';ctx.strokeStyle='#22a6bd';ctx.beginPath();ctx.arc(vx,cy,19,0,Math.PI*2);ctx.fill();ctx.stroke();text('V',vx-5,cy+5,15,'#16849a',true);text('Вольтметр',vx+25,cy+4,11);
+ const vx=rx,vy=cy;ctx.strokeStyle='#607b94';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(rx-36,bottom);ctx.lineTo(rx-36,vy);ctx.lineTo(vx-19,vy);ctx.moveTo(rx+36,bottom);ctx.lineTo(rx+36,vy);ctx.lineTo(vx+19,vy);ctx.stroke();ctx.fillStyle='#fff';ctx.strokeStyle='#22a6bd';ctx.beginPath();ctx.arc(vx,vy,19,0,Math.PI*2);ctx.fill();ctx.stroke();text('V',vx-5,vy+5,15,'#16849a',true);text('Вольтметр · параллельно R',vx+25,vy+4,11);
  // Current markers circulate on the loop (visual indicator; speed responds to I)
- for(let i=0;i<9;i++){const phase=(elapsed*Math.max(.15,I*.35)+i/9)%1;let x,y;if(phase<.25){x=left+(right-left)*(phase/.25);y=top;}else if(phase<.5){x=right;y=top+(bottom-top)*((phase-.25)/.25);}else if(phase<.75){x=right-(right-left)*((phase-.5)/.25);y=bottom;}else{x=left;y=bottom-(bottom-top)*((phase-.75)/.25);}ctx.fillStyle='#20a9be';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();}
+ if(I>0){for(let i=0;i<9;i++){const phase=(elapsed*Math.min(1.2,I*.35)+i/9)%1;let x,y;if(phase<.25){x=left+(right-left)*(phase/.25);y=top;}else if(phase<.5){x=right;y=top+(bottom-top)*((phase-.25)/.25);}else if(phase<.75){x=right-(right-left)*((phase-.5)/.25);y=bottom;}else{x=left;y=bottom-(bottom-top)*((phase-.75)/.25);}ctx.fillStyle='#20a9be';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();}}
  text(`U = ${U} В`,w*.07,h*.1,15,'#2676db',true);text(`R = ${R} Ом`,w*.07,h*.145,13);text(`I = ${I.toFixed(2)} А`,w*.07,h*.19,15,'#17a9b9',true);text('Амперметр — последовательно · вольтметр — параллельно R',w*.07,h*.92,11);
 }
 function drawOptics(w,h){
